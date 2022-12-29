@@ -4,6 +4,13 @@ const OWNER = "supabase"
 const REPO = "supabase"
 const DEFAULT_LIMIT = 10
 
+type Discussion = {
+  id: string
+  name: string
+  createdAt: string
+  description: string
+  slug: string
+}
 const queryFetchCategories = `
 {
   repository(owner: "${OWNER}", name: "${REPO}") {
@@ -19,7 +26,7 @@ const queryFetchCategories = `
   }
 }
 `
-export async function fetchCategories() {
+export async function fetchCategories(): Promise<Discussion[]> {
   // @ts-ignore
   const { repository } = await graphql(queryFetchCategories, {
     headers: {
