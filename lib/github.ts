@@ -6,6 +6,7 @@ const DEFAULT_LIMIT = 10
 
 export type Discussion = {
   id: string
+  number: string
   title: string
   createdAt: string
   upvoteCount: number
@@ -82,6 +83,7 @@ const queryFetchDiscussions = `
         title
         createdAt
         upvoteCount
+        number
         author {
           avatarUrl
           url

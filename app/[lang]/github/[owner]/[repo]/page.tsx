@@ -1,10 +1,11 @@
 import Pagination from "./pagination"
-import { fetchDiscussions } from "../../../../../lib/github"
+import { Discussion, fetchDiscussions } from "../../../../../lib/github"
 import {
   CalendarIcon,
   ChevronRightIcon,
   ArrowSmallUpIcon,
 } from "@heroicons/react/20/solid"
+import Link from "next/link"
 
 async function getData({
   params,
@@ -27,6 +28,13 @@ async function getData({
   }
 }
 
+const discussionHref = (
+  discussion: Discussion,
+  params: { lang: string; owner: string; repo: string }
+) => {
+  return `/${params.lang}/github/${params.owner}/${params.repo}/discussions/${discussion.number}`
+}
+
 export default async function Discussions({
   params,
 }: {
@@ -34,6 +42,7 @@ export default async function Discussions({
 }) {
   const data = await getData({ params })
   const { discussions } = data
+
   return (
     <div className="flex grow flex-col overflow-y-auto">
       <main className="flex-1">
@@ -41,7 +50,10 @@ export default async function Discussions({
           <ul role="list" className="divide-y divide-gray-200">
             {discussions.map((discussion) => (
               <li key={discussion.id}>
-                <a href="#" className="block hover:bg-gray-50">
+                <Link
+                  href={discussionHref(discussion, params)}
+                  className="block hover:bg-gray-50"
+                >
                   <div className="flex items-center px-4 py-4 sm:px-6">
                     <div className="min-w-0 sm:flex sm:items-center sm:justify-between mr-4">
                       <button
@@ -85,12 +97,13 @@ export default async function Discussions({
                             src={discussion.author.avatarUrl}
                             alt={discussion.author.login}
                           />
-                          {discussion.comments.nodes?.map((commentor) => (
+                          {discussion.comments.nodes?.map((commenter) => (
                             <img
-                              key={commentor.id}
+                              key={commenter.id}
                               className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
-                              src={commentor.author.avatarUrl}
-                              alt={commentor.author.login}
+                              src={commenter.author.avatarUrl}
+                              alt={commenter.author.login}
+                              title={commenter.author.login}
                             />
                           ))}
                         </div>
@@ -103,7 +116,7 @@ export default async function Discussions({
                       />
                     </div>
                   </div>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

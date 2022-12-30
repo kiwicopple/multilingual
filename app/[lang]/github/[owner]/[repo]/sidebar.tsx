@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation"
 import { Fragment, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
+import Link from "next/link"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -106,7 +107,7 @@ export default function Sidebar({
                   </nav>
                 </div>
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
-                  <a href="#" className="group block flex-shrink-0">
+                  <Link href="#" className="group block flex-shrink-0">
                     <div className="flex items-center">
                       <div>
                         <img
@@ -124,7 +125,7 @@ export default function Sidebar({
                         </p>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
