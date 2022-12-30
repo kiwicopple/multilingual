@@ -1,6 +1,5 @@
 import Sidebar from "./sidebar"
 import { fetchCategories } from "../../../../../lib/github"
-import Pagination from "./pagination"
 
 async function getData({
   params,
@@ -8,12 +7,14 @@ async function getData({
   params: { lang: string; owner: string; repo: string }
 }) {
   const githubCategories = await fetchCategories()
-  const categories = githubCategories.map((category) => ({
+  const categories = githubCategories.nodes.map((category) => ({
     ...category,
     href: `/${params.lang}/github/${params.owner}/${params.repo}/categories/${category.slug}`,
   }))
 
-  return { categories }
+  return {
+    categories,
+  }
 }
 
 export default async function DiscussionsLayout({
@@ -35,10 +36,7 @@ export default async function DiscussionsLayout({
       <body className="h-full">
         <Sidebar categories={data.categories} urlParams={params} />
         <div className=" md:pl-64 flex min-h-0 flex-1 flex-col flex-grow h-full">
-          <div className="flex grow flex-col overflow-y-auto">{children}</div>
-          <div className=" border-t border-gray-200">
-            <Pagination />
-          </div>
+          {children}
         </div>
       </body>
     </html>

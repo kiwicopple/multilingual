@@ -4,13 +4,49 @@ const OWNER = "supabase"
 const REPO = "supabase"
 const DEFAULT_LIMIT = 10
 
-type Discussion = {
+export type Discussion = {
+  id: string
+  title: string
+  createdAt: string
+  upvoteCount: number
+  author: {
+    avatarUrl: string
+    url: string
+    login: string
+  }
+  category: {
+    id: number
+    name: string
+  }
+  comments: {
+    nodes: {
+      id: string
+      author: {
+        avatarUrl: string
+        login: string
+      }
+    }[]
+  }
+}
+export type Category = {
   id: string
   name: string
   createdAt: string
   description: string
   slug: string
 }
+
+export interface GitHubResponse {
+  totalCount: number
+  pageSize: number
+  pageInfo: {
+    startCursor: string
+    endCursor: string
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+  }
+}
+
 const queryFetchCategories = `
 {
   repository(owner: "${OWNER}", name: "${REPO}") {
@@ -26,14 +62,15 @@ const queryFetchCategories = `
   }
 }
 `
-export async function fetchCategories(): Promise<Discussion[]> {
+export type CategoryResponse = GitHubResponse & { nodes: Category[] }
+export async function fetchCategories(): Promise<CategoryResponse> {
   // @ts-ignore
   const { repository } = await graphql(queryFetchCategories, {
     headers: {
       authorization: `token ${process.env.NEXT_PUBLIC_DISCUSSIONS_TOKEN}`,
     },
   })
-  return repository.discussionCategories.nodes
+  return { ...repository.discussionCategories, pageSize: DEFAULT_LIMIT }
 }
 
 const queryFetchDiscussions = `
@@ -42,22 +79,35 @@ const queryFetchDiscussions = `
     discussions(first: ${DEFAULT_LIMIT}) {
       nodes {
         id
+        title
+        createdAt
+        upvoteCount
         author {
           avatarUrl
           url
           login
         }
-        body
-        title
-        answer {
-          author {
-            avatarUrl
-            login
-          }
-          body
-          createdAt
+        category {
+          id
+          name
         }
-        createdAt
+        labels(first: 5) {
+          nodes {
+            id
+            color
+            description
+            name
+          }
+        }
+        comments(first: 5) {
+          nodes {
+            id
+            author {
+              avatarUrl
+              login
+            }
+          }
+        }
       }
       totalCount
       pageInfo {
@@ -70,12 +120,16 @@ const queryFetchDiscussions = `
   }
 }
 `
-export async function fetchDiscussions() {
+export type DiscussionsResponse = GitHubResponse & { nodes: Discussion[] }
+export async function fetchDiscussions(): Promise<DiscussionsResponse> {
   // @ts-ignore
   const { repository } = await graphql(queryFetchDiscussions, {
     headers: {
       authorization: `token ${process.env.NEXT_PUBLIC_DISCUSSIONS_TOKEN}`,
     },
   })
-  return repository.discussions.nodes
+  return {
+    ...repository.discussions,
+    pageSize: DEFAULT_LIMIT,
+  }
 }

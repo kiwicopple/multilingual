@@ -11,7 +11,7 @@ Transforms your GitHub Discussions into a multilingual forum
 ## Sitemap
 
 ```
-multilingual.dev/[lang]/github/[owner]/[repo]/                              localhost:3000/en/github/supabase/supabase
+multilingual.dev/[lang]/github/[owner]/[repo]/                              localhost:3000/en-us/github/supabase/supabase
 multilingual.dev/[lang]/github/[owner]/[repo]/categories/[categorySlug]
 multilingual.dev/[lang]/github/[owner]/[repo]/posts/[discussionId]
 ```

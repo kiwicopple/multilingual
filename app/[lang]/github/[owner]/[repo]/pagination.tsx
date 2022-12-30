@@ -1,6 +1,19 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
 
-export default function Pagination() {
+export default function Pagination({
+  total,
+  pageSize,
+  pagination,
+}: {
+  total: number
+  pageSize: number
+  pagination: {
+    hasNextPage: boolean
+    hasPreviousPage: boolean
+    startCursor: string
+    endCursor: string
+  }
+}) {
   return (
     <div className="flex items-center justify-between bg-white px-4 py-3 sm:px-6 ">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -22,7 +35,7 @@ export default function Pagination() {
           <p className="text-sm text-gray-700">
             Showing <span className="font-medium">1</span> to{" "}
             <span className="font-medium">10</span> of{" "}
-            <span className="font-medium">97</span> results
+            <span className="font-medium">{total}</span> results
           </p>
         </div>
         <div>
