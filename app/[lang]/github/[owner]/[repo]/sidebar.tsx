@@ -18,7 +18,7 @@ export default function Sidebar({
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div>
+    <>
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -173,7 +173,7 @@ export default function Sidebar({
               ))}
             </nav>
           </div>
-          <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
+          <div className="flex flex-shrink-0 p-4 h-18 overflow-hidden">
             <a href="#" className="group block w-full flex-shrink-0">
               <div className="flex items-center">
                 <div>
@@ -184,7 +184,7 @@ export default function Sidebar({
                   />
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                  <p className="text-xs font-medium text-gray-700 group-hover:text-gray-900">
                     Tom Cook
                   </p>
                   <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
@@ -208,6 +208,6 @@ export default function Sidebar({
           <Bars3Icon className="h-6 w-6" aria-hidden="true" />
         </button>
       </div>
-    </div>
+    </>
   )
 }
