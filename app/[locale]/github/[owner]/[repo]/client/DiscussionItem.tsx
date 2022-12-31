@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useContext } from "react"
 import { LayoutContext } from "../providers"
-import { TranslatedDiscussion } from "../layout.types"
+import { TranslatedDiscussionSummary } from "../layout.types"
 import {
   CalendarIcon,
   ChevronRightIcon,
@@ -13,7 +13,7 @@ import {
 export default function DiscussionItem({
   discussion,
 }: {
-  discussion: TranslatedDiscussion
+  discussion: TranslatedDiscussionSummary
 }) {
   const context = useContext(LayoutContext)
   const { categories } = context

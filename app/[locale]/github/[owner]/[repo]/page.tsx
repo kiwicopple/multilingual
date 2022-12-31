@@ -1,6 +1,6 @@
 import Pagination from "./client/Pagination"
 import DiscussionItem from "./client/DiscussionItem"
-import { TranslatedDiscussion, UrlParams } from "./layout.types"
+import { TranslatedDiscussionSummary, UrlParams } from "./layout.types"
 import { fetchDiscussions } from "../../../../../lib/github"
 import { translateStrings } from "../../../../../lib/openai"
 
@@ -10,7 +10,7 @@ async function getData({ params }: { params: UrlParams }) {
   const githubDiscussionsResponse = await fetchDiscussions()
   const githubDiscussions = githubDiscussionsResponse.nodes
   let titles: string[] = []
-  let discussions: TranslatedDiscussion[] = []
+  let discussions: TranslatedDiscussionSummary[] = []
 
   // Enrich discussions with href and translation.
   // For now the translations name are populated with the default locale.

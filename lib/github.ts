@@ -2,6 +2,7 @@ import { graphql } from "@octokit/graphql"
 import type {
   GitHubCategory,
   GitHubDiscussion,
+  GitHubDiscussionSummary,
   GitHubResponse,
 } from "./github.types"
 
@@ -83,7 +84,9 @@ const queryFetchDiscussions = `
   }
 }
 `
-export type DiscussionsResponse = GitHubResponse & { nodes: GitHubDiscussion[] }
+export type DiscussionsResponse = GitHubResponse & {
+  nodes: GitHubDiscussionSummary[]
+}
 export async function fetchDiscussions(): Promise<DiscussionsResponse> {
   // @ts-ignore
   const { repository } = await graphql(queryFetchDiscussions, {
@@ -93,6 +96,55 @@ export async function fetchDiscussions(): Promise<DiscussionsResponse> {
   })
   return {
     ...repository.discussions,
+    pageSize: DEFAULT_LIMIT,
+  }
+}
+
+export type DiscussionResponse = GitHubResponse & {
+  discussion: GitHubDiscussion
+}
+export async function fetchDiscussion(
+  number: number
+): Promise<DiscussionResponse> {
+  const query = `
+{
+  repository(owner: "${OWNER}", name: "${REPO}") {
+    discussion(number: ${number}) {
+      id
+      number
+      createdAt
+      title
+      body
+      author {
+        avatarUrl(size: 10)
+        url
+        login
+      }
+      comments(first: 100) {
+        nodes {
+          id
+          body
+          createdAt
+          author {
+            avatarUrl(size: 10)
+            login
+          }
+        }
+      }
+    }
+  }
+}
+`
+
+  // @ts-ignore
+  const { repository } = await graphql(query, {
+    headers: {
+      authorization: `token ${process.env.NEXT_PUBLIC_DISCUSSIONS_TOKEN}`,
+    },
+  })
+
+  return {
+    ...repository,
     pageSize: DEFAULT_LIMIT,
   }
 }

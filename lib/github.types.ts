@@ -9,7 +9,13 @@ export interface GitHubResponse {
   }
 }
 
-export type GitHubDiscussion = {
+export type GitHubUser = {
+  avatarUrl: string
+  login: string
+  url: string
+}
+
+export type GitHubDiscussionSummary = {
   id: string
   number: string
   title: string
@@ -31,10 +37,28 @@ export type GitHubDiscussion = {
     }[]
   }
 }
+
 export type GitHubCategory = {
   id: string
   name: string
   createdAt: string
   description: string
   slug: string
+}
+
+export type GitHubDiscussionComment = {
+  id: string
+  number: string
+  createdAt: string
+  title: string
+  body: string
+  author: GitHubUser
+  isAnswer: boolean
+}
+
+export type GitHubDiscussion = GitHubDiscussionComment & {
+  category: GitHubCategory
+  comments: {
+    nodes: GitHubDiscussionComment[]
+  }
 }

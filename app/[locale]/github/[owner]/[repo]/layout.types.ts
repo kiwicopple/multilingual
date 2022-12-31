@@ -1,7 +1,8 @@
 import { type } from "os"
 import {
   GitHubCategory,
-  GitHubDiscussion,
+  GitHubDiscussionComment,
+  GitHubDiscussionSummary,
 } from "../../../../../lib/github.types"
 
 export type UrlParams = {
@@ -9,7 +10,7 @@ export type UrlParams = {
   owner: string
   repo: string
   category?: string
-  discussionId?: number
+  discussion?: number
 }
 
 export type TranslatedCategory = GitHubCategory & {
@@ -17,7 +18,12 @@ export type TranslatedCategory = GitHubCategory & {
   nameTranslation: string
 }
 
-export type TranslatedDiscussion = GitHubDiscussion & {
+export type TranslatedDiscussionSummary = GitHubDiscussionSummary & {
   href: string
   titleTranslation: string
+}
+
+export type TranslatedComment = GitHubDiscussionComment & {
+  titleTranslation: string
+  bodyTranslation: string
 }
