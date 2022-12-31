@@ -1,64 +1,12 @@
 "use client"
 
 import { Fragment, useState } from "react"
+import { useContext } from "react"
+import { LayoutContext } from "../providers"
 import { Listbox, Transition } from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid"
 import { useRouter, usePathname } from "next/navigation"
-
-type SupportedLocales =
-  | "default"
-  | "en-us"
-  | "de-de"
-  | "fr-fr"
-  | "es-es"
-  | "zh-cn"
-  | "ja-jp"
-type Locale = {
-  id: SupportedLocales
-  name: string
-  icon: string
-}
-type Locales = {
-  [key: string]: Locale
-}
-
-const locales: Locales = {
-  default: {
-    id: "default",
-    name: "Default",
-    icon: "http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg",
-  },
-  "en-us": {
-    id: "en-us",
-    name: "English (US)",
-    icon: "http://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg",
-  },
-  "en-gb": {
-    id: "de-de",
-    name: "German",
-    icon: "http://purecatamphetamine.github.io/country-flag-icons/3x2/DE.svg",
-  },
-  "fr-fr": {
-    id: "fr-fr",
-    name: "French",
-    icon: "http://purecatamphetamine.github.io/country-flag-icons/3x2/FR.svg",
-  },
-  "es-es": {
-    id: "es-es",
-    name: "Spanish",
-    icon: "http://purecatamphetamine.github.io/country-flag-icons/3x2/ES.svg",
-  },
-  "zh-cn": {
-    id: "zh-cn",
-    name: "China (Mandarin)",
-    icon: "http://purecatamphetamine.github.io/country-flag-icons/3x2/CN.svg",
-  },
-  "ja-jp": {
-    id: "ja-jp",
-    name: "Japanese",
-    icon: "http://purecatamphetamine.github.io/country-flag-icons/3x2/JP.svg",
-  },
-}
+import { Locale, SupportedLocales } from "../layout.types"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -67,9 +15,10 @@ function classNames(...classes: string[]) {
 export default function LocaleSelector({ locale }: { locale: string }) {
   const router = useRouter()
   const pathname = usePathname()
-  const [selected, setSelected] = useState(
-    locales[locale] || locales["default"]
-  )
+  const context = useContext(LayoutContext)
+  const { locales } = context
+  const selectedLocale: Locale =
+    locales.get(locale) || (locales.get("default") as Locale)
 
   function changeLocale(newLocale: SupportedLocales) {
     if (newLocale == locale || !pathname) return // no change
@@ -79,21 +28,20 @@ export default function LocaleSelector({ locale }: { locale: string }) {
   }
 
   return (
-    <Listbox
-      value={locales[locale] || locales["default"]}
-      onChange={(v) => changeLocale(v.id)}
-    >
+    <Listbox value={selectedLocale} onChange={(v) => changeLocale(v.id)}>
       {({ open }) => (
         <>
           <div className="relative mt-1">
             <Listbox.Button className="relative w-full cursor-default rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
               <span className="flex items-center">
                 <img
-                  src={selected.icon}
+                  src={selectedLocale.icon}
                   alt=""
                   className="h-4 w-6 flex-shrink-0 shadow-lg border"
                 />
-                <span className="ml-3 block truncate">{selected.name}</span>
+                <span className="ml-3 block truncate">
+                  {selectedLocale.name}
+                </span>
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                 <ChevronUpDownIcon
@@ -111,7 +59,7 @@ export default function LocaleSelector({ locale }: { locale: string }) {
               leaveTo="opacity-0"
             >
               <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {Object.values(locales).map((locale) => (
+                {Array.from(locales.values()).map((locale) => (
                   <Listbox.Option
                     key={locale.id}
                     className={({ active }) =>

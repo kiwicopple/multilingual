@@ -1,4 +1,5 @@
 import Sidebar from "./sidebar"
+import ThemeProvider from "./providers"
 import type { TranslatedCategory, UrlParams } from "./layout.types"
 import { fetchCategories } from "../../../../../lib/github"
 import { translateStrings } from "../../../../../lib/openai"
@@ -55,9 +56,11 @@ export default async function DiscussionsLayout({
       <head />
       <body className="h-full">
         <Sidebar categories={data.categories} urlParams={params} />
-        <div className=" md:pl-64 flex min-h-0 flex-1 flex-col flex-grow h-full">
-          {children}
-        </div>
+        <ThemeProvider categories={data.categories} labels={[]}>
+          <div className=" md:pl-64 flex min-h-0 flex-1 flex-col flex-grow h-full">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )

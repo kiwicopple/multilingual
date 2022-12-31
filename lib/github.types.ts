@@ -20,10 +20,7 @@ export type GitHubDiscussion = {
     url: string
     login: string
   }
-  category: {
-    id: number
-    name: string
-  }
+  category: GitHubCategory
   comments: {
     nodes: {
       id: string
