@@ -1,45 +1,52 @@
+import Link from "next/link"
 import Pagination from "./pagination"
-import { Discussion, fetchDiscussions } from "../../../../../lib/github"
+import { TranslatedDiscussion, UrlParams } from "./layout.types"
+import { fetchDiscussions } from "../../../../../lib/github"
+import { translateStrings } from "../../../../../lib/openai"
 import {
   CalendarIcon,
   ChevronRightIcon,
   ArrowSmallUpIcon,
 } from "@heroicons/react/20/solid"
-import Link from "next/link"
 
-async function getData({
-  params,
-}: {
-  params: { lang: string; owner: string; repo: string }
-}) {
-  const githubDiscussions = await fetchDiscussions()
-  const {
-    nodes: discussions,
-    totalCount: totalDiscussions,
-    pageSize: discussionsPageSize,
-    pageInfo: discussionsPagination,
-  } = githubDiscussions
+async function getData({ params }: { params: UrlParams }) {
+  const locale = params.locale.toLocaleLowerCase()
+  const skipTranslation = locale == "default" || locale == "en-us"
+  const githubDiscussionsResponse = await fetchDiscussions()
+  const githubDiscussions = githubDiscussionsResponse.nodes
+  let titles: string[] = []
+  let discussions: TranslatedDiscussion[] = []
+
+  // Enrich discussions with href and translation.
+  // For now the translations name are populated with the default locale.
+  for (let i = 0; i < githubDiscussions.length; i++) {
+    const discussion = githubDiscussions[i]
+    titles.push(discussion.title)
+    discussions.push({
+      ...discussion,
+      href: `/${params.locale}/github/${params.owner}/${params.repo}/discussions/${discussion.number}`,
+      titleTranslation: discussion.title,
+    })
+  }
+
+  // Get translations if this is not the default locale
+  // @todo: cache translations
+  if (!skipTranslation) {
+    const translations = await translateStrings(titles, locale)
+    discussions.forEach((discussion, index) => {
+      discussion.titleTranslation = translations[index]
+    })
+  }
 
   return {
     discussions,
-    totalDiscussions,
-    discussionsPageSize,
-    discussionsPagination,
+    totalDiscussions: githubDiscussionsResponse.totalCount,
+    discussionsPageSize: githubDiscussionsResponse.pageSize,
+    discussionsPageInfo: githubDiscussionsResponse.pageInfo,
   }
 }
 
-const discussionHref = (
-  discussion: Discussion,
-  params: { lang: string; owner: string; repo: string }
-) => {
-  return `/${params.lang}/github/${params.owner}/${params.repo}/discussions/${discussion.number}`
-}
-
-export default async function Discussions({
-  params,
-}: {
-  params: { lang: string; owner: string; repo: string }
-}) {
+export default async function Discussions({ params }: { params: UrlParams }) {
   const data = await getData({ params })
   const { discussions } = data
 
@@ -50,10 +57,7 @@ export default async function Discussions({
           <ul role="list" className="divide-y divide-gray-200">
             {discussions.map((discussion) => (
               <li key={discussion.id}>
-                <Link
-                  href={discussionHref(discussion, params)}
-                  className="block hover:bg-gray-50"
-                >
+                <Link href={discussion.href} className="block hover:bg-gray-50">
                   <div className="flex items-center px-4 py-4 sm:px-6">
                     <div className="min-w-0 sm:flex sm:items-center sm:justify-between mr-4">
                       <button
@@ -71,7 +75,7 @@ export default async function Discussions({
                       <div className="truncate">
                         <div className="flex text-sm">
                           <p className="truncate font-medium text-indigo-600">
-                            {discussion.title}
+                            {discussion.titleTranslation ?? discussion.title}
                           </p>
                         </div>
                         <div className="mt-2 flex">
@@ -127,7 +131,7 @@ export default async function Discussions({
         <Pagination
           total={data.totalDiscussions}
           pageSize={data.discussionsPageSize}
-          pagination={data.discussionsPagination}
+          pageInfo={data.discussionsPageInfo}
         />
       </div>
     </div>

@@ -1,53 +1,13 @@
 import { graphql } from "@octokit/graphql"
+import type {
+  GitHubCategory,
+  GitHubDiscussion,
+  GitHubResponse,
+} from "./github.types"
 
 const OWNER = "supabase"
 const REPO = "supabase"
 const DEFAULT_LIMIT = 10
-
-export type Discussion = {
-  id: string
-  number: string
-  title: string
-  createdAt: string
-  upvoteCount: number
-  author: {
-    avatarUrl: string
-    url: string
-    login: string
-  }
-  category: {
-    id: number
-    name: string
-  }
-  comments: {
-    nodes: {
-      id: string
-      author: {
-        avatarUrl: string
-        login: string
-      }
-    }[]
-  }
-}
-export type Category = {
-  id: string
-  name: string
-  createdAt: string
-  description: string
-  slug: string
-  translation?: string
-}
-
-export interface GitHubResponse {
-  totalCount: number
-  pageSize: number
-  pageInfo: {
-    startCursor: string
-    endCursor: string
-    hasNextPage: boolean
-    hasPreviousPage: boolean
-  }
-}
 
 const queryFetchCategories = `
 {
@@ -64,7 +24,7 @@ const queryFetchCategories = `
   }
 }
 `
-export type CategoryResponse = GitHubResponse & { nodes: Category[] }
+export type CategoryResponse = GitHubResponse & { nodes: GitHubCategory[] }
 export async function fetchCategories(): Promise<CategoryResponse> {
   // @ts-ignore
   const { repository } = await graphql(queryFetchCategories, {
@@ -123,7 +83,7 @@ const queryFetchDiscussions = `
   }
 }
 `
-export type DiscussionsResponse = GitHubResponse & { nodes: Discussion[] }
+export type DiscussionsResponse = GitHubResponse & { nodes: GitHubDiscussion[] }
 export async function fetchDiscussions(): Promise<DiscussionsResponse> {
   // @ts-ignore
   const { repository } = await graphql(queryFetchDiscussions, {

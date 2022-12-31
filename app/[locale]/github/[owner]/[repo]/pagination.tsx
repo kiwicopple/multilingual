@@ -3,11 +3,11 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
 export default function Pagination({
   total,
   pageSize,
-  pagination,
+  pageInfo,
 }: {
   total: number
   pageSize: number
-  pagination: {
+  pageInfo: {
     hasNextPage: boolean
     hasPreviousPage: boolean
     startCursor: string

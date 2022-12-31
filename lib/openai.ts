@@ -5,34 +5,25 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
-// const categoriesSeed = `
-// en-us:
-// [{ "name": "Changelog" },{ "name": "Feature Requests" }]
-// -----
-// ja-jp:
-// [{ "name": "変更履歴" },{ "name": "機能要求" }]
-// -----
-// en-us:`.trim()
-const categoriesPrompt = (categories: any[], locale: string) => {
-  const names = categories.map((category: any) => category.name)
+// Takes an array of strings and returns an array of translated strings
+export async function translateStrings(strings: string[], locale: string) {
+  // Prepare the prompt
   const description = `Translate from en-us to ${locale}:`
-  const toTranslate = JSON.stringify(names)
-  return `${description}\n${toTranslate}=>["`
-}
-export async function translateCategories(categories: any[], locale: string) {
-  const prompt = categoriesPrompt(categories, locale)
-  console.log("prompt", prompt)
+  const toTranslate = JSON.stringify(strings)
+  const prompt = `${description}\n${toTranslate}=>["`
 
+  // Get the translated strings
   const response = await openai.createCompletion({
     prompt,
     model: "text-davinci-003",
     temperature: 0.4,
-    max_tokens: 256,
+    max_tokens: 1000,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
   })
-  const translated = `["${response.data.choices[0].text}`
 
+  const translated = `["${response.data.choices[0].text}`
+  console.log("translated", translated)
   return JSON.parse(translated || "[]")
 }

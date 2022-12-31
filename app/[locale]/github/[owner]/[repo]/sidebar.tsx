@@ -5,6 +5,7 @@ import { Dialog, Transition } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
 import LocaleSelector from "./LocaleSelector"
+import { TranslatedCategory, UrlParams } from "./layout.types"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -14,8 +15,8 @@ export default function Sidebar({
   categories,
   urlParams,
 }: {
-  categories: any[]
-  urlParams: { locale: string; owner: string; repo: string }
+  categories: TranslatedCategory[]
+  urlParams: UrlParams
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -87,7 +88,7 @@ export default function Sidebar({
                         key={item.id}
                         href={item.href}
                         className={classNames(
-                          item.current
+                          urlParams.category === item.id
                             ? "bg-gray-100 text-gray-900"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                           "group flex items-center px-2 py-2 text-base font-medium rounded-md"
@@ -158,7 +159,7 @@ export default function Sidebar({
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    item.current
+                    urlParams.category === item.id
                       ? "bg-gray-100 text-gray-900"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                     "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
@@ -173,7 +174,7 @@ export default function Sidebar({
                     )}
                     aria-hidden="true"
                   /> */}
-                  {item.translation ?? item.name}
+                  {item.nameTranslation}
                 </a>
               ))}
             </nav>

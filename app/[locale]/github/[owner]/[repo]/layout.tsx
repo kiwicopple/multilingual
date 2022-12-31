@@ -1,25 +1,36 @@
 import Sidebar from "./sidebar"
-import type { UrlParams } from "./layout.types"
+import type { TranslatedCategory, UrlParams } from "./layout.types"
 import { fetchCategories } from "../../../../../lib/github"
-import { translateCategories } from "../../../../../lib/openai"
+import { translateStrings } from "../../../../../lib/openai"
+
+export const revalidate = 600 // 10 minutes
 
 async function getData({ params }: { params: UrlParams }) {
-  const githubCategories = await fetchCategories()
-  const categories = githubCategories.nodes.map((category) => ({
-    ...category,
-    href: `/${params.locale}/github/${params.owner}/${params.repo}/categories/${category.slug}`,
-  }))
+  const locale = params.locale.toLocaleLowerCase()
+  const skipTranslation = locale == "default" || locale == "en-us"
+  const githubCategoriesResponse = await fetchCategories()
+  const githubCategories = githubCategoriesResponse.nodes
+  let names: string[] = []
+  let categories: TranslatedCategory[] = []
+
+  // Enrich categories with href and translated name.
+  // For now the translated name is the same as the name.
+  for (let i = 0; i < githubCategories.length; i++) {
+    const category = githubCategories[i]
+    names.push(category.name)
+    categories.push({
+      ...category,
+      href: `/${params.locale}/github/${params.owner}/${params.repo}/categories/${category.slug}`,
+      nameTranslation: category.name,
+    })
+  }
 
   // Get translations if this is not the default locale
   // @todo: cache translations
-  const locale = params.locale.toLocaleLowerCase()
-  const skipTranslation = locale == "default" || locale == "en-us"
   if (!skipTranslation) {
-    const translations = await translateCategories(categories, locale)
-    console.log("translations", translations)
-
+    const translations = await translateStrings(names, locale)
     categories.forEach((category, index) => {
-      category.translation = translations[index]
+      category.nameTranslation = translations[index]
     })
   }
 
