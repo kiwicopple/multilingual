@@ -51,10 +51,10 @@ async function getData({ params }: { params: UrlParams }) {
 
 async function serializeComments(comments: TranslatedComment[]) {
   const serializedPromises = comments.map(async (comment) => {
-    if (comment.id == "D_kwDODMpXOc4AR9Nq") {
-      console.log("\n\ncomment.body\n\n", comment.body)
-      console.log("\n\ncomment.bodyTranslation\n\n", comment.bodyTranslation)
-    }
+    // if (comment.id == "D_kwDODMpXOc4AR9Nq") {
+    //   console.log("\n\ncomment.body\n\n", comment.body)
+    //   console.log("\n\ncomment.bodyTranslation\n\n", comment.bodyTranslation)
+    // }
     const markdown = await serializeMarkdown(comment.body)
     const translation = await serializeMarkdown(comment.bodyTranslation)
     return { markdown, translation }
@@ -73,14 +73,12 @@ export default async function Discussion({ params }: { params: UrlParams }) {
       {serialized.map((comment, i) => (
         <div key={i} className={`border-b flex divide-x`}>
           <div
-            className={`p-4 flex-1 w-1/2 ${i % 2 ? "bg-gray-100" : "bg-white"}`}
+            className={`p-4 flex-1 w-1/2 bg-white hover:bg-gray-100 transition-colors`}
           >
             <Comment comment={comment.translation} />
           </div>
           <div
-            className={`p-4 flex-1 w-1/2 opacity-10 hover:opacity-100 transition-opacity ${
-              i % 2 ? "bg-gray-100" : "bg-white"
-            }`}
+            className={`p-4 flex-1 w-1/2 opacity-10 hover:opacity-100 transition-opacity bg-gray-100`}
           >
             <Comment comment={comment.markdown} />
           </div>

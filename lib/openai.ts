@@ -35,7 +35,7 @@ export async function translateMarkdown(string: string, locale: string) {
     description += `Translate from en-us to ${locale}.\n`
     description += `All markdown and formatting should be unchanged.\n`
     description += `Do not translate anything that looks like programming code:\n`
-    const prompt = `${description}\n-----\n` + string
+    const prompt = `${description}\n-----\n` + string + `\n-----\n`
     // console.log("prompt", prompt)
 
     // Get the translated string

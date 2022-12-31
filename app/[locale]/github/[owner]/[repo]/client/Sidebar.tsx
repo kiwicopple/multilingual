@@ -83,8 +83,16 @@ export default function Sidebar({
                     />
                   </div>
                   <nav className="mt-5 space-y-1 px-2">
+                    <Link
+                      href={`/default/github/supabase/supabase`}
+                      className={
+                        "bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                      }
+                    >
+                      All
+                    </Link>
                     {categories.map((item) => (
-                      <a
+                      <Link
                         key={item.id}
                         href={item.href}
                         className={classNames(
@@ -104,7 +112,7 @@ export default function Sidebar({
                           aria-hidden="true"
                         /> */}
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </nav>
                 </div>
@@ -154,8 +162,16 @@ export default function Sidebar({
               <LocaleSelector locale={urlParams.locale} />
             </div>
             <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
+              <Link
+                href={`/default/github/supabase/supabase`}
+                className={
+                  "bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                }
+              >
+                All
+              </Link>
               {categories.map((item) => (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
                   className={classNames(
@@ -175,7 +191,7 @@ export default function Sidebar({
                     aria-hidden="true"
                   /> */}
                   {item.nameTranslation}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>
