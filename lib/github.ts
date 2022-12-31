@@ -35,6 +35,7 @@ export type Category = {
   createdAt: string
   description: string
   slug: string
+  translation?: string
 }
 
 export interface GitHubResponse {

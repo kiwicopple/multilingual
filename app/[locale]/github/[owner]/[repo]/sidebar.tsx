@@ -1,9 +1,10 @@
 "use client"
-import { usePathname } from "next/navigation"
+
 import { Fragment, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
+import LocaleSelector from "./LocaleSelector"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -14,7 +15,7 @@ export default function Sidebar({
   urlParams,
 }: {
   categories: any[]
-  urlParams: { lang: string; owner: string; repo: string }
+  urlParams: { locale: string; owner: string; repo: string }
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -148,6 +149,9 @@ export default function Sidebar({
                 alt="Your Company"
               />
             </div>
+            <div className="p-4">
+              <LocaleSelector locale={urlParams.locale} />
+            </div>
             <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
               {categories.map((item) => (
                 <a
@@ -169,7 +173,7 @@ export default function Sidebar({
                     )}
                     aria-hidden="true"
                   /> */}
-                  {item.name}
+                  {item.translation ?? item.name}
                 </a>
               ))}
             </nav>

@@ -1,20 +1,29 @@
 import Sidebar from "./sidebar"
+import type { UrlParams } from "./layout.types"
 import { fetchCategories } from "../../../../../lib/github"
+import { translateCategories } from "../../../../../lib/openai"
 
-async function getData({
-  params,
-}: {
-  params: { lang: string; owner: string; repo: string }
-}) {
+async function getData({ params }: { params: UrlParams }) {
   const githubCategories = await fetchCategories()
   const categories = githubCategories.nodes.map((category) => ({
     ...category,
-    href: `/${params.lang}/github/${params.owner}/${params.repo}/categories/${category.slug}`,
+    href: `/${params.locale}/github/${params.owner}/${params.repo}/categories/${category.slug}`,
   }))
 
-  return {
-    categories,
+  // Get translations if this is not the default locale
+  // @todo: cache translations
+  const locale = params.locale.toLocaleLowerCase()
+  const skipTranslation = locale == "default" || locale == "en-us"
+  if (!skipTranslation) {
+    const translations = await translateCategories(categories, locale)
+    console.log("translations", translations)
+
+    categories.forEach((category, index) => {
+      category.translation = translations[index]
+    })
   }
+
+  return { categories }
 }
 
 export default async function DiscussionsLayout({
@@ -22,7 +31,7 @@ export default async function DiscussionsLayout({
   params,
 }: {
   children: React.ReactNode
-  params: { lang: string; owner: string; repo: string }
+  params: UrlParams
 }) {
   const data = await getData({ params })
 
