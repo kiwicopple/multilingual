@@ -1,3 +1,5 @@
+"use client"
+
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
 
 export default function Pagination({

@@ -1,4 +1,4 @@
-import Sidebar from "./sidebar"
+import Sidebar from "./client/Sidebar"
 import ThemeProvider from "./providers"
 import type { TranslatedCategory, UrlParams } from "./layout.types"
 import { fetchCategories } from "../../../../../lib/github"

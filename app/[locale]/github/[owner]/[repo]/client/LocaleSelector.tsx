@@ -6,7 +6,7 @@ import { LayoutContext } from "../providers"
 import { Listbox, Transition } from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid"
 import { useRouter, usePathname } from "next/navigation"
-import { Locale, SupportedLocales } from "../layout.types"
+import { Locale, SupportedLocales } from "../../../../../../lib/app.types"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")

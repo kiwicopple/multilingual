@@ -1,15 +1,8 @@
-import Pagination from "./pagination"
+import Pagination from "./client/Pagination"
 import DiscussionItem from "./client/DiscussionItem"
-import { useContext } from "react"
-import { LayoutContext } from "./providers"
 import { TranslatedDiscussion, UrlParams } from "./layout.types"
 import { fetchDiscussions } from "../../../../../lib/github"
 import { translateStrings } from "../../../../../lib/openai"
-import {
-  CalendarIcon,
-  ChevronRightIcon,
-  ArrowSmallUpIcon,
-} from "@heroicons/react/20/solid"
 
 async function getData({ params }: { params: UrlParams }) {
   const locale = params.locale.toLocaleLowerCase()
