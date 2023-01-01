@@ -1,18 +1,18 @@
-# Multilingual.dev
+# Multilingual Forum
 
 Transforms your GitHub Discussions into a multilingual forum
 
 ## Features
 
-- Automatically translate comments to any language
-- Multilingual search
-- User badges for answers
+- [x] Automatically translate comments to any language
+- [ ] Multilingual search
+- [ ] User badges for answers
 
 ## Sitemap
 
 ```
-multilingual.dev/[lang]/github/[owner]/[repo]/                              localhost:3000/en-us/github/supabase/supabase
-multilingual.dev/[lang]/github/[owner]/[repo]/categories/[categorySlug]
-multilingual.dev/[lang]/github/[owner]/[repo]/posts/[discussionId]
+/[locale]/github/[owner]/[repo]/                              localhost:3000/en-us/github/supabase/supabase
+/[locale]/github/[owner]/[repo]/category?categorySlug]
+/[locale]/github/[owner]/[repo]/discussions/[discussionNumber]
 ```
 
