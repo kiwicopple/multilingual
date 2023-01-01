@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.comment .with-opacity-removed {
+  @apply opacity-20 transition-opacity;
+}
+
+.comment:hover .comment-header {
+  @apply opacity-100;
+}

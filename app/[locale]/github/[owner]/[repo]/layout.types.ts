@@ -26,4 +26,5 @@ export type TranslatedDiscussionSummary = GitHubDiscussionSummary & {
 export type TranslatedComment = GitHubDiscussionComment & {
   titleTranslation: string
   bodyTranslation: string
+  level: number // the hierarchy level of the comment
 }

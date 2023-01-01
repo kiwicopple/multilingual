@@ -12,17 +12,33 @@ async function getData({ params }: { params: UrlParams }) {
   const githubDiscussion = githubDiscussionResponse.discussion
 
   // Pluck out the comments and add default translations.
-  let comments: TranslatedComment[] = githubDiscussion.comments.nodes.map(
-    (comment) => ({
+  let comments: TranslatedComment[] = []
+
+  githubDiscussion.comments.nodes.forEach((comment) => {
+    comments.push({
       ...comment,
+      level: 0,
       titleTranslation: comment.title,
       bodyTranslation: comment.body,
     })
-  )
+
+    // if there are replies, add them to the comments array.
+    if (comment.replies?.nodes.length) {
+      comment.replies.nodes.forEach((reply) => {
+        comments.push({
+          ...reply,
+          level: 1,
+          titleTranslation: reply.title,
+          bodyTranslation: reply.body,
+        })
+      })
+    }
+  })
 
   // The initial discussion is the first comment.
   comments.unshift({
     ...githubDiscussion,
+    level: 0,
     titleTranslation: githubDiscussion.title,
     bodyTranslation: githubDiscussion.body,
   })
@@ -65,22 +81,22 @@ async function serializeComments(comments: TranslatedComment[]) {
 
 export default async function Discussion({ params }: { params: UrlParams }) {
   const data = await getData({ params })
-  const { discussion, serialized } = data
+  const { discussion, comments, serialized } = data
 
   return (
     <>
       <h2 className="p-4 border-b text-lg font-bold">{discussion.title}</h2>
-      {serialized.map((comment, i) => (
+      {comments.map((comment, i) => (
         <div key={i} className={`border-b flex divide-x`}>
           <div
-            className={`p-4 flex-1 w-1/2 bg-white hover:bg-gray-100 transition-colors`}
+            className={`flex-1 w-1/2 bg-white hover:bg-gray-100 transition-colors`}
           >
-            <Comment comment={comment.translation} />
+            <Comment comment={comment} markdown={serialized[i].translation} />
           </div>
           <div
-            className={`p-4 flex-1 w-1/2 opacity-10 hover:opacity-100 transition-opacity bg-gray-100`}
+            className={`flex-1 w-1/2 opacity-10 hover:opacity-100 transition-opacity bg-gray-100`}
           >
-            <Comment comment={comment.markdown} />
+            <Comment comment={comment} markdown={serialized[i].markdown} />
           </div>
         </div>
       ))}

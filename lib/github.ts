@@ -116,7 +116,7 @@ export async function fetchDiscussion(
       title
       body
       author {
-        avatarUrl(size: 10)
+        avatarUrl(size: 50)
         url
         login
       }
@@ -126,8 +126,19 @@ export async function fetchDiscussion(
           body
           createdAt
           author {
-            avatarUrl(size: 10)
+            avatarUrl(size: 50)
             login
+          }
+          replies(first: 100) {
+            nodes {
+              id
+              createdAt
+              body
+              author {
+                avatarUrl(size: 50)
+                login
+              }
+            }
           }
         }
       }

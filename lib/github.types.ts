@@ -54,6 +54,9 @@ export type GitHubDiscussionComment = {
   body: string
   author: GitHubUser
   isAnswer: boolean
+  replies?: {
+    nodes: GitHubDiscussionComment[]
+  }
 }
 
 export type GitHubDiscussion = GitHubDiscussionComment & {
