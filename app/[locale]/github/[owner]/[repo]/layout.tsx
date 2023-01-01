@@ -21,7 +21,7 @@ async function getData({ params }: { params: UrlParams }) {
     names.push(category.name)
     categories.push({
       ...category,
-      href: `/${params.locale}/github/${params.owner}/${params.repo}/categories/${category.slug}`,
+      href: `/${params.locale}/github/${params.owner}/${params.repo}?category=${category.id}`,
       nameTranslation: category.name,
     })
   }

@@ -6,6 +6,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
 import LocaleSelector from "./LocaleSelector"
 import { TranslatedCategory, UrlParams } from "../layout.types"
+import { useSearchParams } from "next/navigation"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")
@@ -18,8 +19,9 @@ export default function Sidebar({
   categories: TranslatedCategory[]
   urlParams: UrlParams
 }) {
+  const searchParams = useSearchParams()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const categoryId = searchParams.get("category")
   return (
     <>
       <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -85,9 +87,12 @@ export default function Sidebar({
                   <nav className="mt-5 space-y-1 px-2">
                     <Link
                       href={`/default/github/supabase/supabase`}
-                      className={
-                        "bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                      }
+                      className={classNames(
+                        !categoryId
+                          ? "bg-gray-100 text-gray-900"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                        "group flex items-center px-2 py-2 text-base font-medium rounded-md"
+                      )}
                     >
                       All
                     </Link>
@@ -96,7 +101,7 @@ export default function Sidebar({
                         key={item.id}
                         href={item.href}
                         className={classNames(
-                          urlParams.category === item.id
+                          categoryId === item.id
                             ? "bg-gray-100 text-gray-900"
                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                           "group flex items-center px-2 py-2 text-base font-medium rounded-md"
@@ -164,9 +169,12 @@ export default function Sidebar({
             <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
               <Link
                 href={`/default/github/supabase/supabase`}
-                className={
-                  "bg-gray-100 text-gray-900 group flex items-center px-2 py-2 text-base font-medium rounded-md"
-                }
+                className={classNames(
+                  !categoryId
+                    ? "bg-gray-100 text-gray-900"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                )}
               >
                 All
               </Link>
@@ -175,7 +183,7 @@ export default function Sidebar({
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    urlParams.category === item.id
+                    categoryId === item.id
                       ? "bg-gray-100 text-gray-900"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                     "group flex items-center px-2 py-2 text-sm font-medium rounded-md"

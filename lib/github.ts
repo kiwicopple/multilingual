@@ -44,7 +44,7 @@ export async function fetchDiscussions({
 }: {
   category: string
 }): Promise<DiscussionsResponse> {
-  const categoryFilter = category ? `category: "${category}"` : ""
+  const categoryFilter = category ? `categoryId: "${category}"` : ""
   const queryFetchDiscussions = `
 {
   repository(owner: "${OWNER}", name: "${REPO}") {
