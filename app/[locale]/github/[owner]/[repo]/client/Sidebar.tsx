@@ -75,13 +75,13 @@ export default function Sidebar({
                   </div>
                 </Transition.Child>
                 <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
-                  <div className="flex flex-shrink-0 items-center px-4">
+                  {/* <div className="flex flex-shrink-0 items-center px-4">
                     <img
                       className="h-8 w-auto"
                       src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                       alt="Your Company"
                     />
-                  </div>
+                  </div> */}
                   <nav className="mt-5 space-y-1 px-2">
                     <Link
                       href={`/default/github/supabase/supabase`}
@@ -150,14 +150,14 @@ export default function Sidebar({
       <div className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
-          <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
-            <div className="flex flex-shrink-0 items-center px-4">
+          <div className="flex flex-1 flex-col overflow-y-auto pb-4">
+            {/* <div className="flex flex-shrink-0 items-center px-4">
               <img
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                 alt="Your Company"
               />
-            </div>
+            </div> */}
             <div className="p-4">
               <LocaleSelector locale={urlParams.locale} />
             </div>

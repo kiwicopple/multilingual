@@ -12,9 +12,14 @@ export default function Loading({
 }) {
   const isRoot = comment.level == 0
   const paddingLevel = isRoot ? "" : "border-l-10"
+
+  //   if (!comment.author) {
+  //     console.log("comment", comment)
+  //     return null
+  //   }
   return (
     <div className={`comment flex flex-col ${paddingLevel}`}>
-      <div className="comment-header p-4 border-b">
+      <div className="comment-header p-4 border-b opacity-20 remove-opacity-on-hover">
         <img
           className="inline-block h-6 w-6 rounded-full border border-gray-300"
           src={comment.author.avatarUrl}

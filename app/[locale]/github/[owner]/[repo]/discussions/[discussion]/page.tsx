@@ -3,6 +3,7 @@ import { TranslatedComment, UrlParams } from "../../layout.types"
 import { fetchDiscussion } from "../../../../../../../lib/github"
 import { translateMarkdown } from "../../../../../../../lib/openai"
 import { serializeMarkdown } from "../../../../../../../lib/helpers"
+import { DELETED_GITHUB_USER } from "../../../../../../../lib/constants"
 
 async function getData({ params }: { params: UrlParams }) {
   const number = params.discussion!
@@ -20,6 +21,7 @@ async function getData({ params }: { params: UrlParams }) {
       level: 0,
       titleTranslation: comment.title,
       bodyTranslation: comment.body,
+      author: comment.author || DELETED_GITHUB_USER,
     })
 
     // if there are replies, add them to the comments array.
@@ -30,6 +32,7 @@ async function getData({ params }: { params: UrlParams }) {
           level: 1,
           titleTranslation: reply.title,
           bodyTranslation: reply.body,
+          author: comment.author || DELETED_GITHUB_USER,
         })
       })
     }
@@ -41,6 +44,7 @@ async function getData({ params }: { params: UrlParams }) {
     level: 0,
     titleTranslation: githubDiscussion.title,
     bodyTranslation: githubDiscussion.body,
+    author: githubDiscussion.author || DELETED_GITHUB_USER,
   })
 
   // Get translations if this is not the default locale
@@ -87,9 +91,9 @@ export default async function Discussion({ params }: { params: UrlParams }) {
     <>
       <h2 className="p-4 border-b text-lg font-bold">{discussion.title}</h2>
       {comments.map((comment, i) => (
-        <div key={i} className={`border-b flex divide-x`}>
+        <div key={i} className={`border-b flex`}>
           <div
-            className={`flex-1 w-1/2 bg-white hover:bg-gray-100 transition-colors`}
+            className={`flex-1 w-1/2 bg-white hover:bg-gray-100 transition-colors border-r`}
           >
             <Comment comment={comment} markdown={serialized[i].translation} />
           </div>

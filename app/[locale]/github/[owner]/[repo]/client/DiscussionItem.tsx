@@ -26,7 +26,7 @@ export default function DiscussionItem({
           <div className="min-w-0 sm:flex sm:items-center sm:justify-between mr-4">
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-transparent bg-indigo-600 px-3 py-2 text-xs font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              className="inline-flex items-center rounded-full border border-transparent bg-green-700 px-3 py-2 text-xs font-medium leading-4 text-white shadow-sm hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2"
             >
               <ArrowSmallUpIcon
                 className="-ml-0.5 mr-2 h-4 w-4"
@@ -38,7 +38,7 @@ export default function DiscussionItem({
           <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
             <div className="truncate">
               <div className="flex text-sm">
-                <p className="truncate font-medium text-indigo-600">
+                <p className="truncate font-medium text-green-700">
                   {discussion.titleTranslation ?? discussion.title}
                 </p>
               </div>

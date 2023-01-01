@@ -58,3 +58,8 @@ export const Locales: Map<string, Locale> = new Map([
     },
   ],
 ])
+
+export const DELETED_GITHUB_USER = {
+  avatarUrl: "https://avatars.githubusercontent.com/u/10137?v=4",
+  login: "ghost",
+}
