@@ -4,6 +4,7 @@ import { fetchDiscussion } from "../../../../../../../lib/github"
 import { translateMarkdown } from "../../../../../../../lib/openai"
 import { serializeMarkdown } from "../../../../../../../lib/helpers"
 import { DELETED_GITHUB_USER } from "../../../../../../../lib/constants"
+import { GitHubDiscussionComment } from "../../../../../../../lib/github.types"
 
 async function getData({ params }: { params: UrlParams }) {
   const number = params.discussion!
@@ -13,38 +14,49 @@ async function getData({ params }: { params: UrlParams }) {
   const githubDiscussion = githubDiscussionResponse.discussion
 
   // Pluck out the comments and add default translations.
-  let comments: TranslatedComment[] = []
-
+  type CommentsWithLevels = GitHubDiscussionComment & {
+    level: number
+  }
+  let commentList: CommentsWithLevels[] = []
   githubDiscussion.comments.nodes.forEach((comment) => {
-    comments.push({
+    commentList.push({
       ...comment,
       level: 0,
-      titleTranslation: comment.title,
-      bodyTranslation: comment.body,
-      author: comment.author || DELETED_GITHUB_USER,
     })
 
     // if there are replies, add them to the comments array.
     if (comment.replies?.nodes.length) {
       comment.replies.nodes.forEach((reply) => {
-        comments.push({
+        commentList.push({
           ...reply,
           level: 1,
-          titleTranslation: reply.title,
-          bodyTranslation: reply.body,
-          author: comment.author || DELETED_GITHUB_USER,
         })
       })
     }
   })
 
   // The initial discussion is the first comment.
-  comments.unshift({
+  commentList.unshift({
     ...githubDiscussion,
     level: 0,
-    titleTranslation: githubDiscussion.title,
-    bodyTranslation: githubDiscussion.body,
-    author: githubDiscussion.author || DELETED_GITHUB_USER,
+  })
+
+  // cleanse and enrich the comments.
+  const comments: TranslatedComment[] = commentList.map((comment) => {
+    // Remove the quoted reply from the comment body.
+    const cleansedBody = comment.body.replace(
+      /\n\n>.*/s,
+      " *[Quoted text Removed]*"
+    )
+
+    console.log("cleansedBody", cleansedBody)
+    return {
+      ...comment,
+      titleTranslation: comment.title,
+      body: cleansedBody,
+      bodyTranslation: cleansedBody,
+      author: comment.author || DELETED_GITHUB_USER,
+    }
   })
 
   // Get translations if this is not the default locale
@@ -71,10 +83,6 @@ async function getData({ params }: { params: UrlParams }) {
 
 async function serializeComments(comments: TranslatedComment[]) {
   const serializedPromises = comments.map(async (comment) => {
-    // if (comment.id == "D_kwDODMpXOc4AR9Nq") {
-    //   console.log("\n\ncomment.body\n\n", comment.body)
-    //   console.log("\n\ncomment.bodyTranslation\n\n", comment.bodyTranslation)
-    // }
     const markdown = await serializeMarkdown(comment.body)
     const translation = await serializeMarkdown(comment.bodyTranslation)
     return { markdown, translation }

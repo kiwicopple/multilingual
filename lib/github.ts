@@ -36,10 +36,19 @@ export async function fetchCategories(): Promise<CategoryResponse> {
   return { ...repository.discussionCategories, pageSize: DEFAULT_LIMIT }
 }
 
-const queryFetchDiscussions = `
+export type DiscussionsResponse = GitHubResponse & {
+  nodes: GitHubDiscussionSummary[]
+}
+export async function fetchDiscussions({
+  category,
+}: {
+  category: string
+}): Promise<DiscussionsResponse> {
+  const categoryFilter = category ? `category: "${category}"` : ""
+  const queryFetchDiscussions = `
 {
   repository(owner: "${OWNER}", name: "${REPO}") {
-    discussions(first: ${DEFAULT_LIMIT}) {
+    discussions(first: ${DEFAULT_LIMIT} ${categoryFilter}) {
       nodes {
         id
         title
@@ -84,10 +93,6 @@ const queryFetchDiscussions = `
   }
 }
 `
-export type DiscussionsResponse = GitHubResponse & {
-  nodes: GitHubDiscussionSummary[]
-}
-export async function fetchDiscussions(): Promise<DiscussionsResponse> {
   // @ts-ignore
   const { repository } = await graphql(queryFetchDiscussions, {
     headers: {
@@ -120,7 +125,7 @@ export async function fetchDiscussion(
         url
         login
       }
-      comments(first: 100) {
+      comments(first: 3) {
         nodes {
           id
           body
@@ -129,7 +134,7 @@ export async function fetchDiscussion(
             avatarUrl(size: 50)
             login
           }
-          replies(first: 100) {
+          replies(first: 3) {
             nodes {
               id
               createdAt

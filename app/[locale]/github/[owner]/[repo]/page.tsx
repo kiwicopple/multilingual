@@ -4,10 +4,19 @@ import { TranslatedDiscussionSummary, UrlParams } from "./layout.types"
 import { fetchDiscussions } from "../../../../../lib/github"
 import { translateStrings } from "../../../../../lib/openai"
 
-async function getData({ params }: { params: UrlParams }) {
+async function getData({
+  params,
+  searchParams,
+}: {
+  params: UrlParams
+  searchParams: any
+}) {
   const locale = params.locale.toLocaleLowerCase()
+  const categoryFilter = searchParams["category"] as string
   const skipTranslation = locale == "default" || locale == "en-us"
-  const githubDiscussionsResponse = await fetchDiscussions()
+  const githubDiscussionsResponse = await fetchDiscussions({
+    category: categoryFilter,
+  })
   const githubDiscussions = githubDiscussionsResponse.nodes
   let titles: string[] = []
   let discussions: TranslatedDiscussionSummary[] = []
@@ -41,8 +50,14 @@ async function getData({ params }: { params: UrlParams }) {
   }
 }
 
-export default async function Discussions({ params }: { params: UrlParams }) {
-  const data = await getData({ params })
+export default async function Discussions({
+  params,
+  searchParams,
+}: {
+  params: UrlParams
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  const data = await getData({ params, searchParams })
   const { discussions } = data
 
   return (
